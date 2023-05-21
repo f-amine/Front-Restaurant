@@ -1,15 +1,25 @@
 import { Link } from "react-router-dom";
 import "./topbar.css";
+import Cookies from "js-cookie";
 
 export default function Topbar() {
-  const user = true;
+  const jwt = Cookies.get("jwt");
+  const isLoggedIn = jwt && jwt !== "";
+
+  const handleLogout = () => {
+    Cookies.remove("jwt");
+    window.location.reload();
+  };
+
   return (
     <div className="top">
       <div className="topLeft">
-        <i className="topIcon fab fa-facebook-square"></i>
-        <i className="topIcon fab fa-instagram-square"></i>
-        <i className="topIcon fab fa-pinterest-square"></i>
-        <i className="topIcon fab fa-twitter-square"></i>
+        <a href="https://www.linkedin.com/in/amine-frira/" target="_blank" rel="noopener noreferrer">
+          <i className="topIcon fab fa-linkedin"></i>
+        </a>
+        <a href="https://github.com/f-amine" target="_blank" rel="noopener noreferrer">
+          <i className="topIcon fab fa-github"></i>
+        </a>
       </div>
       <div className="topCenter">
         <ul className="topList">
@@ -18,18 +28,33 @@ export default function Topbar() {
               HOME
             </Link>
           </li>
-          <li className="topListItem">ABOUT</li>
-          <li className="topListItem">CONTACT</li>
           <li className="topListItem">
             <Link className="link" to="/write">
               WRITE
             </Link>
           </li>
-          {user && <li className="topListItem">LOGOUT</li>}
+          {isLoggedIn ? (
+            <li className="topListItem" onClick={handleLogout}>
+              LOGOUT
+            </li>
+          ) : (
+            <>
+              <li className="topListItem">
+                <Link className="link" to="/login">
+                  LOGIN
+                </Link>
+              </li>
+              <li className="topListItem">
+                <Link className="link" to="/register">
+                  REGISTER
+                </Link>
+              </li>
+            </>
+          )}
         </ul>
       </div>
       <div className="topRight">
-        {user ? (
+        {isLoggedIn && (
           <Link className="link" to="/settings">
             <img
               className="topImg"
@@ -37,19 +62,6 @@ export default function Topbar() {
               alt=""
             />
           </Link>
-        ) : (
-          <ul className="topList">
-            <li className="topListItem">
-              <Link className="link" to="/login">
-                LOGIN
-              </Link>
-            </li>
-            <li className="topListItem">
-              <Link className="link" to="/register">
-                REGISTER
-              </Link>
-            </li>
-          </ul>
         )}
         <i className="topSearchIcon fas fa-search"></i>
       </div>

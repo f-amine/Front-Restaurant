@@ -5,7 +5,7 @@ export default function Header() {
     <div className="header">
       <div className="headerTitles">
         <span className="headerTitleSm">Find the best</span>
-        <span className="headerTitleLg">RESTAURANT</span>
+        <span className="headerTitleLg">RESTAURANT</span>     
       </div>
       <img
         className="headerImg"

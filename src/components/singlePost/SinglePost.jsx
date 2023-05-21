@@ -1,78 +1,73 @@
-import { Link } from "react-router-dom";
+import {  useLocation } from "react-router-dom";
 import "./singlePost.css";
-import { useState, useEffect } from "react";
+import RouteMap from "../map/RouteMap";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import { useRouter } from 'next/router';
+import Cookies from "js-cookie";
+
+
 export default function SinglePost() {
-  const router = useRouter();
-  const { restaurantId } = router.query;
-  const [restaurant, setRestaurant] = useState({});
-  console.log(restaurantId);
+  const location = useLocation();
+  const restaurant = location.state?.restaurant;
+  const [latlng, setLatLng] = useState({});
+  const [user, setUser] = useState({});
 
   useEffect(() => {
-    if (restaurantId) { 
-      axios
-        .get(`http://localhost:8081/api/restaurants/${restaurantId}`)
-        .then((response) => setRestaurant(response.data))
+      const token = Cookies.get("jwt");
+        axios.post("http://localhost:8081/api/v1/auth/user", {
+          "jwt":token
+        }).then((response) => {
+          setUser(response.data);
+          console.log("hhhhhhhhhhhhhhhhh",response.data);
+        
+      })
         .catch((error) => console.log(error));
-    }
-  }, [restaurantId]); 
-  return (
+      }, []);
+useEffect(() => {
+  console.log("user",user);
+}, [user]);
+  function handleChildValue(newValue) {
+    setLatLng(newValue);
+    console.log(latlng);
+  }
+  
+  return user!= null&&(
     <div className="singlePost">
       <div className="singlePostWrapper">
-        <img
+      <img
           className="singlePostImg"
-          src="https://images.pexels.com/photos/6685428/pexels-photo-6685428.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
+          src={"/" + restaurant.picture}
           alt=""
         />
         <h1 className="singlePostTitle">
-          {restaurant.nom}
           <div className="singlePostEdit">
-            <i className="singlePostIcon far fa-edit"></i>
-            <i className="singlePostIcon far fa-trash-alt"></i>
           </div>
         </h1>
         <div className="singlePostInfo">
           <span>
-            Author:
+            Restaurant Name : 
             <b className="singlePostAuthor">
-              <Link className="link" to="/posts?username=Safak">
-                Safak
-              </Link>
+                {restaurant.nom}
             </b>
           </span>
-          <span>1 day ago</span>
+          <span>Opens At: {restaurant.open}  ||  Closes at : {restaurant.close}</span>
         </div>
-        <p className="singlePostDesc">
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Iste error
-          quibusdam ipsa quis quidem doloribus eos, dolore ea iusto impedit!
-          Voluptatum necessitatibus eum beatae, adipisci voluptas a odit modi
-          eos! Lorem, ipsum dolor sit amet consectetur adipisicing elit. Iste
-          error quibusdam ipsa quis quidem doloribus eos, dolore ea iusto
-          impedit! Voluptatum necessitatibus eum beatae, adipisci voluptas a
-          odit modi eos! Lorem, ipsum dolor sit amet consectetur adipisicing
-          elit. Iste error quibusdam ipsa quis quidem doloribus eos, dolore ea
-          iusto impedit! Voluptatum necessitatibus eum beatae, adipisci voluptas
-          a odit modi eos! Lorem, ipsum dolor sit amet consectetur adipisicing
-          elit. Iste error quibusdam ipsa quis quidem doloribus eos, dolore ea
-          iusto impedit! Voluptatum necessitatibus eum beatae, adipisci voluptas
-          a odit modi eos! Lorem, ipsum dolor sit amet consectetur adipisicing
-          elit. Iste error quibusdam ipsa quis quidem doloribus eos, dolore ea
-          iusto impedit! Voluptatum necessitatibus eum beatae, adipisci voluptas
-          a odit modi eos!
-          <br />
-          <br />
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Iste error
-          quibusdam ipsa quis quidem doloribus eos, dolore ea iusto impedit!
-          Voluptatum necessitatibus eum beatae, adipisci voluptas a odit modi
-          eos! Lorem, ipsum dolor sit amet consectetur adipisicing elit. Iste
-          error quibusdam ipsa quis quidem doloribus eos, dolore ea iusto
-          impedit! Voluptatum necessitatibus eum beatae, adipisci voluptas a
-          odit modi eos! Lorem, ipsum dolor sit amet consectetur adipisicing
-          elit. Iste error quibusdam ipsa quis quidem doloribus eos, dolore ea
-          iusto impedit! Voluptatum necessitatibus eum beatae, adipisci voluptas
-          a odit modi eos! Lorem, ipsum dolor sit amet consectetur.
-        </p>
+        <div className="singlePostInfo">
+          <span>
+            Restaurant Owner : 
+            <b className="singlePostAuthor">
+                {user.firstName} {user.lastName}
+            </b>
+          </span>
+          <span>Address : {restaurant.adresse}</span>
+        </div>
+        {user !=null && (
+        <RouteMap field={{
+          lat:parseFloat(restaurant.lattitude),
+          long:parseFloat(restaurant.longtitude),
+          userlat: user.latitude,
+          userlong: user.longitude}} />
+        )}
       </div>
     </div>
   );

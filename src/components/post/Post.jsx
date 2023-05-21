@@ -2,39 +2,44 @@ import { Link } from "react-router-dom";
 import "./post.css";
 
 export default function Post({restaurant}) {
-  
   return (
+    <Link 
+    to={{ 
+      pathname: `/restaurants/${restaurant.id}`,
+      state: { 
+        'restaurant': restaurant
+      } 
+    }} 
+    className="link"
+  >
     <div className="post">
       <img
         className="postImg"
-        src={restaurant.photos.url}
+        src={restaurant.picture}
         alt=""
       />
       <div className="postInfo">
         <div className="postCats">
         {restaurant.restaurantspecialite && restaurant.restaurantspecialite.map((item, index) => (
           <span className="postCat" key={index}>
-            <Link className="link" to={`/restaurants/${restaurant.id}`}>
               {item.specialite.nom}
-            </Link>
+            {index !== restaurant.restaurantspecialite.length - 1 && " || "}
           </span>
         ))}
 
+
         </div>
         <span className="postTitle">
-          <Link to={`/restaurants/${restaurant.id}`} className="link">
             {restaurant.nom}
-          </Link>
+
         </span>
         <hr />
         <span className="postDate">Opens At: {restaurant.open}  ||  Closes at : {restaurant.close}</span>
       </div>
       <p className="postDesc">
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Assumenda
-        officia architecto deserunt deleniti? Labore ipsum aspernatur magnam
-        fugiat, reprehenderit praesentium blanditiis quos cupiditate ratione
-        atque, exercitationem quibusdam, reiciendis odio laboriosam?
+        {restaurant.description ? restaurant.description : "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Assumenda officia architecto deserunt deleniti? Labore ipsum aspernatur magnam fugiat, reprehenderit praesentium blanditiis quos cupiditate ratione atque, exercitationem quibusdam, reiciendis odio laboriosam?"}
       </p>
     </div>
+    </Link>
   );
 }
