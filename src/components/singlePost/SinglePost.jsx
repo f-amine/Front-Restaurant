@@ -30,13 +30,14 @@ useEffect(() => {
     setLatLng(newValue);
     console.log(latlng);
   }
-  
+  console.log("🚀 ~ file: SinglePost.jsx:40 ~ SinglePost ~ restaurant.picture:", restaurant.picture)
   return user!= null&&(
     <div className="singlePost">
       <div className="singlePostWrapper">
       <img
           className="singlePostImg"
-          src={"/" + restaurant.picture}
+          src={ restaurant.picture}
+          
           alt=""
         />
         <h1 className="singlePostTitle">

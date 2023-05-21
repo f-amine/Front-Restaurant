@@ -2,6 +2,9 @@ import "./write.css";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import RestaurantMap from "../../components/map/RestaurantMap";
+import Cookies from "js-cookie";
+import Swal from "sweetalert2";
+
 export default function Write() {
   const [nom, setNom] = useState("");
   const [open, setOpen] = useState("");
@@ -14,7 +17,9 @@ export default function Write() {
   const [zoneId, setZoneId] = useState("");
   const [villeId, setVilleId] = useState("");
   const [latlng, setLatLng] = useState({});
+  const [description, setDescription] = useState("");
   const [filePath, setFilePath] = useState("");
+  const [user, setUser] = useState({});
   console.log(filePath);
   function handleChildValue(newValue) {
   setLatLng(newValue);
@@ -24,6 +29,16 @@ export default function Write() {
     const startIndex = path.lastIndexOf("\\") + 1; // Find the index of the last backslash
     return path.substring(startIndex); // Extract the substring from the last backslash position till the end
   };
+  useEffect(() => {
+    const token = Cookies.get("jwt");
+      axios.post("http://localhost:8081/api/v1/auth/user", {
+        "jwt":token
+      }).then((response) => {
+        setUser(response.data);
+    })
+      .catch((error) => console.log(error));
+    }, []);
+
   useEffect(() => {
     axios
       .get("http://localhost:8081/api/zones/get")
@@ -49,6 +64,8 @@ export default function Write() {
       adresse,
       weekend,
       rank,
+      user,
+      description,
       picture: "/images/"+filePath,
       zones: {
         id: zoneId,
@@ -63,10 +80,27 @@ export default function Write() {
       longtitude: latlng.lng
     };
     console.log(data);
-    axios.post("http://localhost:8081/api/restaurants/save", data)
-      .then((response) => console.log(response))
-      .catch((error) => console.log(error));
-  };
+    axios
+    .post("http://localhost:8081/api/restaurants/save", data)
+    .then((response) => {
+      console.log(response);
+      // Display success notification
+      Swal.fire({
+        icon: "success",
+        title: "Restaurant Published!",
+        text: "Your restaurant has been published successfully.",
+      });
+    })
+    .catch((error) => {
+      console.log(error);
+      // Display error notification
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "An error occurred while publishing the restaurant.",
+      });
+    });
+};
 
   return (
     <div className="write">
@@ -75,7 +109,7 @@ export default function Write() {
         src="/images/7.jpg"
         alt=""
       />
-      <form className="writeForm" onSubmit={handleSubmit}>
+      <form className="writeForm card" onSubmit={handleSubmit}>
         <div className="writeFormGroup">
         <label htmlFor="fileInput">
             <i className="writeIcon fas fa-plus"></i>
@@ -170,6 +204,15 @@ export default function Write() {
               ))}
           </select>
         </div>
+        <div className="writeFormGroup">
+            <textarea
+              className="writeInput"
+              placeholder="Description"
+              value={description}
+              onChange={(event) => setDescription(event.target.value)}
+            />
+          </div>
+
 
 
         <br/>

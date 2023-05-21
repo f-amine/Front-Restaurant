@@ -33,7 +33,7 @@ function RouteMap({field}) {
       <MapContainer
         center={position}
         zoom={30}
-        scrollWheelZoom={true}
+        scrollWheelZoom={false}
         whenCreated={setMap}
       >
 <TileLayer

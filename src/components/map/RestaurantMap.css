@@ -1,5 +1,9 @@
 .leaflet-container {
-    width: 70% !important ;
-    height:20rem !important ;
+    width: 80% !important;
+    height: 20rem !important;
     margin: 0 auto !important;
-}
+    border: 2px solid #000; /* Add a border with a width of 2px and a color of black */
+    border-radius: 5px; /* Add rounded corners to the border */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* Add a box shadow for a subtle effect */
+  }
+  
