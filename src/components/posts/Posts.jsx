@@ -11,7 +11,7 @@ export default function Posts() {
       .then((response) => setRestaurants(response.data))
       .catch((error) => console.log(error));
   }, []);
-  console.log("🚀 ~ file: Posts.jsx:7 ~ Posts ~ restaurants:", restaurants)
+
 
   return (
     <div className="posts">

@@ -36,7 +36,7 @@ useEffect(() => {
       <div className="singlePostWrapper">
       <img
           className="singlePostImg"
-          src={ restaurant.picture}
+          src={"/" +  restaurant.picture}
           
           alt=""
         />
